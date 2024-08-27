@@ -1,0 +1,46 @@
+steps:
+  - id: 'Initialize Terraform'
+    name: "hashicorp/terraform:1.0.0"
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        echo "*******************"
+        echo "Terraform Init"
+        echo "*******************"
+        terraform init -backend-config="bucket=bucket-statefile" -backend-config="prefix=terraform/state" || exit 1
+
+  - id: 'Validate Terraform'
+    name: "hashicorp/terraform:1.0.0"
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        echo "*******************"
+        echo "Terraform Validate"
+        echo "*******************"
+        terraform validate
+
+  - id: 'Terraform Plan'
+    name: "hashicorp/terraform:1.0.0"
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        echo "*******************"
+        echo "Terraform Plan"
+        echo "*******************"
+        terraform plan
+
+  - id: 'Terraform Apply'
+    name: "hashicorp/terraform:1.0.0"
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        echo "*******************"
+        echo "Terraform Apply"
+        echo "*******************"
+        terraform apply --auto-approve
+options:
+  logging: CLOUD_LOGGING_ONLY
