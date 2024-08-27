@@ -29,5 +29,4 @@ resource "google_compute_instance" "vm" {
 */
 provider "google" {
     project = "data-air-433813-q7"
-    credentials = "terraformcloudbuild.json"
 }
