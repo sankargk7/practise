@@ -42,5 +42,9 @@ steps:
         echo "Terraform Apply"
         echo "*******************"
         terraform apply --auto-approve
+availableSecrets:
+  secretManager:
+    - versionName: projects/549477020228/secrets/secret/versions/1
+      env: "secret"
 options:
   logging: CLOUD_LOGGING_ONLY
