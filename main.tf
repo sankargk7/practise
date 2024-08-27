@@ -1,10 +1,10 @@
-# resource "google_storage_bucket" "static" {
-#  name          = "python-practice-407605-new123456"
-#  location      = "US"
-#  storage_class = "STANDARD"
-#  uniform_bucket_level_access = true
-# }
-
+ resource "google_storage_bucket" "static" {
+  name          = "python-practice-407605-new123456"
+  location      = "US"
+  storage_class = "STANDARD"
+  uniform_bucket_level_access = true
+}
+/*
 resource "google_compute_instance" "vm" {
   name              = "terraform-instance-1234"
   machine_type      = "n2-standard-2"
@@ -26,7 +26,7 @@ resource "google_compute_instance" "vm" {
     }
   }
 }
-
+*/
 provider "google" {
     project = "data-air-433813-q7"
     credentials = "terraformcloudbuild.json"
