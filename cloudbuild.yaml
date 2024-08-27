@@ -9,6 +9,7 @@ steps:
         echo "Terraform Init"
         echo "*******************"
         terraform init -backend-config="bucket=bucket-statefile" -backend-config="prefix=terraform/state" || exit 1
+        secretEnv: ['secret']
 
   - id: 'Validate Terraform'
     name: "hashicorp/terraform:1.0.0"
@@ -20,6 +21,7 @@ steps:
         echo "Terraform Validate"
         echo "*******************"
         terraform validate
+        secretEnv: ['secret']
 
   - id: 'Terraform Plan'
     name: "hashicorp/terraform:1.0.0"
@@ -31,6 +33,7 @@ steps:
         echo "Terraform Plan"
         echo "*******************"
         terraform plan
+        secretEnv: ['secret']
 
   - id: 'Terraform Apply'
     name: "hashicorp/terraform:1.0.0"
@@ -42,6 +45,7 @@ steps:
         echo "Terraform Apply"
         echo "*******************"
         terraform apply --auto-approve
+        secretEnv: ['secret']
 availableSecrets:
   secretManager:
     - versionName: projects/549477020228/secrets/secret/versions/1
