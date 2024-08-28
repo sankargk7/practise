@@ -1,9 +1,9 @@
-#  resource "google_storage_bucket" "static" {
-#   name          = "python-practice-407605-new1237456"
-#   location      = "US"
-#   storage_class = "STANDARD"
-#   uniform_bucket_level_access = true
-# }
+ resource "google_storage_bucket" "static" {
+  name          = "python-practice-407605-new1237456"
+  location      = "US"
+  storage_class = "STANDARD"
+  uniform_bucket_level_access = true
+}
 /*
 resource "google_compute_instance" "vm" {
   name              = "terraform-instance-1234"
