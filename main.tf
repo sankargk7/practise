@@ -30,3 +30,35 @@ resource "google_compute_instance" "vm" {
 provider "google" {
     project = "data-air-433813-q7"
 }
+
+resource "google_storage_notification" "notification" {
+  bucket         = "bucket-statefile"
+  payload_format = "JSON_API_V1"
+  topic          = google_pubsub_topic.topic.id
+  event_types    = ["OBJECT_FINALIZE"]
+  object_name_prefix = "terraform/state/default.tfstate"
+  custom_attributes = {
+    new-attribute = "new-attribute-value"
+  }
+  depends_on = [google_pubsub_topic_iam_binding.binding]
+}
+
+// Enable notifications by giving the correct IAM permission to the unique service account.
+
+
+resource "google_pubsub_topic_iam_binding" "binding" {
+  topic   = google_pubsub_topic.topic.id
+  role    = "roles/pubsub.publisher"
+  members = ["serviceAccount:test-sa@data-air-433813-q7.iam.gserviceaccount.com"]
+}
+
+// End enabling notifications
+
+# resource "google_storage_bucket" "bucket" {
+#   name     = "default_bucket"
+#   location = "US"
+# }
+
+resource "google_pubsub_topic" "topic" {
+  name = "storage_topic"
+}
