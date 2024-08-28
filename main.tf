@@ -65,3 +65,15 @@ resource "google_pubsub_topic_iam_binding" "binding" {
 resource "google_pubsub_topic" "topic" {
   name = "storage_topic"
 }
+
+
+# Define the Pub/Sub subscription
+resource "google_pubsub_subscription" "subscription" {
+  name  = "storage_sub"  # Replace with your desired subscription name
+  topic = "projects/data-air-433813-q7/topics/storage_topic"  # Replace with your Pub/Sub topic name
+
+  # Optional settings
+  ack_deadline_seconds = 60  # The time (in seconds) Pub/Sub waits for an ack before retrying
+  retain_acked_messages = true
+  message_retention_duration = "600s"
+}
