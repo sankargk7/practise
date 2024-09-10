@@ -83,6 +83,8 @@ resource "google_cloudfunctions_function" "function" {
   name        = "function-test"
   description = "My function"
   runtime     = "python312"
+  project     = "data-air-433813-q7"
+  region      = "europe-west3"
 
   available_memory_mb   = 128
   source_archive_bucket = "bucket-statefile"
