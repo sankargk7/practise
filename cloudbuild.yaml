@@ -47,6 +47,16 @@ steps:
         echo "*******************"
         terraform apply --auto-approve
 
+  - id: 'Create Zip'
+    name: "gcr.io/cloud-builders/gsutil"
+    entrypoint: 'bash'
+    secretEnv: ['secret']
+    args:
+      - '-c'
+      - |
+        zip -r source_repo.zip ./
+        gsutil cp source_repo.zip gs://bucket-statefile/terraform/state/
+
 availableSecrets:
   secretManager:
     - versionName: projects/549477020228/secrets/secret/versions/1
