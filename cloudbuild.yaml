@@ -57,6 +57,22 @@ steps:
         zip -r source_repo.zip ./
         gsutil cp source_repo.zip gs://bucket-statefile/terraform/state/
 
+  - id: 'Deploy cloud function'
+    name: "gcr.io/cloud-builders/gsutil"
+    entrypoint: 'bash'
+    secretEnv: ['secret']
+    args:
+      - '-c'
+      - |
+        gcloud functions deploy asset-mgmt
+        --runtime=python312 \
+        --region=europe-west3 \
+        --source gs://bucket-statefile/terraform/state/source_repo.zip \
+        project data-air-433813-q7
+
+
+
+
 availableSecrets:
   secretManager:
     - versionName: projects/549477020228/secrets/secret/versions/1
