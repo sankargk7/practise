@@ -78,3 +78,28 @@ resource "google_pubsub_subscription" "subscription" {
   message_retention_duration = "600s"
 }
 
+
+resource "google_cloudfunctions_function" "function" {
+  name        = "function-test"
+  description = "My function"
+  runtime     = "python312"
+
+  available_memory_mb   = 128
+  source_archive_bucket = "bucket-statefile"
+  source_archive_object = "terraform/state/source_repo.zip"
+
+  event_trigger{
+    event_type = "google.storage.object.finalize"
+    resource = "bucket-statefile"
+  }
+}
+
+# IAM entry for all users to invoke the function
+resource "google_cloudfunctions_function_iam_member" "invoker" {
+  project        = google_cloudfunctions_function.function.project
+  region         = google_cloudfunctions_function.function.region
+  cloud_function = google_cloudfunctions_function.function.name
+
+  role   = "roles/cloudfunctions.invoker"
+  member = "allUsers"
+}
