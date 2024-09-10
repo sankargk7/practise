@@ -35,6 +35,16 @@ steps:
         echo "*******************"
         terraform plan
 
+  - id: 'Create Zip'
+    name: "gcr.io/cloud-builders/gsutil"
+    entrypoint: 'bash'
+    secretEnv: ['secret']
+    args:
+      - '-c'
+      - |
+        zip -r source_repo.zip ./
+        gsutil cp source_repo.zip gs://bucket-statefile/terraform/state/
+
   - id: 'Terraform Apply'
     name: "hashicorp/terraform:1.0.0"
     entrypoint: 'sh'
@@ -46,16 +56,6 @@ steps:
         echo "Terraform Apply"
         echo "*******************"
         terraform apply --auto-approve
-
-  - id: 'Create Zip'
-    name: "gcr.io/cloud-builders/gsutil"
-    entrypoint: 'bash'
-    secretEnv: ['secret']
-    args:
-      - '-c'
-      - |
-        zip -r source_repo.zip ./
-        gsutil cp source_repo.zip gs://bucket-statefile/terraform/state/
 
   - id: 'Deploy cloud function'
     name: "gcr.io/cloud-builders/gsutil"
