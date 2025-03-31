@@ -9,7 +9,7 @@ steps:
         echo "*******************"
         echo "Terraform Init"
         echo "*******************"
-        terraform init -backend-config="bucket=bucket-statefile" -backend-config="prefix=terraform/state" || exit 1
+        terraform init -backend-config="bucket=bucket-statefile1" -backend-config="prefix=terraform/state" || exit 1
 
   - id: 'Validate Terraform'
     name: "hashicorp/terraform:1.0.0"
@@ -35,15 +35,15 @@ steps:
         echo "*******************"
         terraform plan
 
-  - id: 'Create Zip'
-    name: "gcr.io/cloud-builders/gsutil"
-    entrypoint: 'bash'
-    secretEnv: ['secret']
-    args:
-      - '-c'
-      - |
-        zip -r source_repo.zip ./
-        gsutil cp source_repo.zip gs://bucket-statefile/terraform/state/
+  # - id: 'Create Zip'
+  #   name: "gcr.io/cloud-builders/gsutil"
+  #   entrypoint: 'bash'
+  #   secretEnv: ['secret']
+  #   args:
+  #     - '-c'
+  #     - |
+  #       zip -r source_repo.zip ./
+  #       gsutil cp source_repo.zip gs://bucket-statefile/terraform/state/
 
   - id: 'Terraform Apply'
     name: "hashicorp/terraform:1.0.0"
@@ -57,25 +57,22 @@ steps:
         echo "*******************"
         terraform apply --auto-approve
 
-  - id: 'Deploy cloud function'
-    name: "gcr.io/cloud-builders/gsutil"
-    entrypoint: 'bash'
-    secretEnv: ['secret']
-    args:
-      - '-c'
-      - |
-        gcloud functions deploy asset-mgmt
-        --runtime=python312 \
-        --region=europe-west3 \
-        --source gs://bucket-statefile/terraform/state/source_repo.zip \
-        project data-air-433813-q7
-
-
-
+  # - id: 'Deploy cloud function'
+  #   name: "gcr.io/cloud-builders/gsutil"
+  #   entrypoint: 'bash'
+  #   secretEnv: ['secret']
+  #   args:
+  #     - '-c'
+  #     - |
+  #       gcloud functions deploy asset-mgmt
+  #       --runtime=python312 \
+  #       --region=europe-west3 \
+  #       --source gs://bucket-statefile/terraform/state/source_repo.zip \
+  #       project data-air-433813-q7
 
 availableSecrets:
   secretManager:
-    - versionName: projects/549477020228/secrets/secret/versions/1
+    - versionName: projects/301746375743/secrets/secret/versions/1
       env: "secret"
 options:
   logging: CLOUD_LOGGING_ONLY
