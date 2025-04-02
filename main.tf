@@ -128,5 +128,5 @@ resource "google_bigquery_dataset" "billing_export" {
 resource "google_bigquery_dataset_iam_member" "billing_export_writer" {
   dataset_id = google_bigquery_dataset.billing_export.dataset_id
   role       = "roles/bigquery.dataEditor"
-  member     = "serviceAccount:billing-sa@system.gserviceaccount.com"
+  member     = "serviceAccount:billing-sa@evident-display-455412-k1.iam.gserviceaccount.com"
 }
