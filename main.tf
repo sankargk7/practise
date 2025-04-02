@@ -106,10 +106,6 @@ provider "google" {
 #   member = "allUsers"
 # }
 
-provider "google" {
-  project = "evident-display-455412-k1"
-}
-
 # Create a BigQuery dataset for billing export
 resource "google_bigquery_dataset" "billing_export" {
   dataset_id = "billing_data"
