@@ -113,20 +113,20 @@ resource "google_service_account" "billing_sa" {
   description  = "This is a service account created via Terraform"
 }
 
-# # Create a BigQuery dataset for billing export
-# resource "google_bigquery_dataset" "billing_export" {
-#   dataset_id = "billing_data"
-#   project    = "evident-display-455412-k1"
-#   location   = "US"
+# Create a BigQuery dataset for billing export
+resource "google_bigquery_dataset" "billing_export" {
+  dataset_id = "billing_data"
+  project    = "evident-display-455412-k1"
+  location   = "US"
 
-#   labels = {
-#     environment = "billing"
-#   }
-# }
+  labels = {
+    environment = "billing"
+  }
+}
 
-# # Grant permissions to the Billing Export system service account
-# resource "google_bigquery_dataset_iam_member" "billing_export_writer" {
-#   dataset_id = google_bigquery_dataset.billing_export.dataset_id
-#   role       = "roles/bigquery.dataEditor"
-#   member     = "serviceAccount:billing-export-system@system.gserviceaccount.com"
-# }
+# Grant permissions to the Billing Export system service account
+resource "google_bigquery_dataset_iam_member" "billing_export_writer" {
+  dataset_id = google_bigquery_dataset.billing_export.dataset_id
+  role       = "roles/bigquery.dataEditor"
+  member     = "serviceAccount:billing-sa@system.gserviceaccount.com"
+}
