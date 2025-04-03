@@ -134,17 +134,107 @@ resource "google_bigquery_dataset_iam_member" "billing_export_writer" {
 
 ##############################
 
+# resource "google_service_account" "default" {
+#   account_id   = "my-custom-sa"
+#   display_name = "Custom SA for VM Instance"
+# }
+
+# resource "google_compute_instance" "default" {
+#   name         = "my-instance"
+#   machine_type = "n2-standard-2"
+#   zone         = "us-central1-a"
+
+#   tags = ["foo", "bar"]
+
+#   boot_disk {
+#     initialize_params {
+#       image = "debian-cloud/debian-11"
+#       labels = {
+#         my_label = "value"
+#       }
+#     }
+#   }
+
+#   // Local SSD disk
+#   scratch_disk {
+#     interface = "NVME"
+#   }
+
+#   network_interface {
+#     network = "default"
+
+#     access_config {
+#       // Ephemeral public IP
+#     }
+#   }
+
+#   metadata = {
+#     foo = "bar"
+#   }
+
+#   metadata_startup_script = "echo hi > /test.txt"
+
+#   service_account {
+#     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+#     email  = google_service_account.default.email
+#     scopes = ["cloud-platform"]
+#   }
+# }
+
+#########################
+
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id                  = "billing_dataset"
+  friendly_name               = "billing"
+  description                 = "This is a for Billing"
+  location                    = "EU"
+  default_table_expiration_ms = 3600000
+
+  labels = {
+    env = "default"
+  }
+
+  access {
+    role          = "OWNER"
+    user_by_email = google_service_account.bqowner.email
+  }
+
+  access {
+    role   = "READER"
+    domain = "hashicorp.com"
+  }
+}
+
+resource "google_service_account" "bqowner" {
+  account_id = "bqowner"
+}
+
+######################
+
 resource "google_service_account" "default" {
   account_id   = "my-custom-sa"
   display_name = "Custom SA for VM Instance"
 }
 
+variable "instance_count" {
+  default = 3  # Number of instances to create
+}
+
+variable "instance_names" {
+  default = ["instance-1", "instance-2", "instance-3"]  # Names for the instances
+}
+
+variable "instance_tags" {
+  default = [["tag1", "tag2"], ["tag3", "tag4"], ["tag5", "tag6"]]  # Tags for each instance
+}
+
 resource "google_compute_instance" "default" {
-  name         = "my-instance"
+  count        = var.instance_count
+  name         = var.instance_names[count.index]
   machine_type = "n2-standard-2"
   zone         = "us-central1-a"
 
-  tags = ["foo", "bar"]
+  tags = var.instance_tags[count.index]
 
   boot_disk {
     initialize_params {
@@ -175,36 +265,7 @@ resource "google_compute_instance" "default" {
   metadata_startup_script = "echo hi > /test.txt"
 
   service_account {
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     email  = google_service_account.default.email
     scopes = ["cloud-platform"]
   }
-}
-
-#########################
-
-resource "google_bigquery_dataset" "dataset" {
-  dataset_id                  = "billing_dataset"
-  friendly_name               = "billing"
-  description                 = "This is a for Billing"
-  location                    = "EU"
-  default_table_expiration_ms = 3600000
-
-  labels = {
-    env = "default"
-  }
-
-  access {
-    role          = "OWNER"
-    user_by_email = google_service_account.bqowner.email
-  }
-
-  access {
-    role   = "READER"
-    domain = "hashicorp.com"
-  }
-}
-
-resource "google_service_account" "bqowner" {
-  account_id = "bqowner"
 }
