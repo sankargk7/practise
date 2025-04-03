@@ -180,3 +180,31 @@ resource "google_compute_instance" "default" {
     scopes = ["cloud-platform"]
   }
 }
+
+#########################
+
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id                  = "billing_dataset"
+  friendly_name               = "billing"
+  description                 = "This is a for Billing"
+  location                    = "EU"
+  default_table_expiration_ms = 3600000
+
+  labels = {
+    env = "default"
+  }
+
+  access {
+    role          = "OWNER"
+    user_by_email = google_service_account.bqowner.email
+  }
+
+  access {
+    role   = "READER"
+    domain = "hashicorp.com"
+  }
+}
+
+resource "google_service_account" "bqowner" {
+  account_id = "bqowner"
+}
