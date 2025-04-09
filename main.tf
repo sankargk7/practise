@@ -211,61 +211,61 @@ resource "google_service_account" "bqowner" {
 
 ######################
 
-resource "google_service_account" "default" {
-  account_id   = "my-custom-sa"
-  display_name = "Custom SA for VM Instance"
-}
+# resource "google_service_account" "default" {
+#   account_id   = "my-custom-sa"
+#   display_name = "Custom SA for VM Instance"
+# }
 
-variable "instance_count" {
-  default = 3  # Number of instances to create
-}
+# variable "instance_count" {
+#   default = 3  # Number of instances to create
+# }
 
-variable "instance_names" {
-  default = ["instance-1", "instance-2", "instance-3"]  # Names for the instances
-}
+# variable "instance_names" {
+#   default = ["instance-1", "instance-2", "instance-3"]  # Names for the instances
+# }
 
-variable "instance_tags" {
-  default = [["tag1", "tag2"], ["tag3", "tag4"], ["tag5", "tag6"]]  # Tags for each instance
-}
+# variable "instance_tags" {
+#   default = [["tag1", "tag2"], ["tag3", "tag4"], ["tag5", "tag6"]]  # Tags for each instance
+# }
 
-resource "google_compute_instance" "default" {
-  count        = var.instance_count
-  name         = var.instance_names[count.index]
-  machine_type = "n2-standard-2"
-  zone         = "us-central1-a"
+# resource "google_compute_instance" "default" {
+#   count        = var.instance_count
+#   name         = var.instance_names[count.index]
+#   machine_type = "n2-standard-2"
+#   zone         = "us-central1-a"
 
-  tags = var.instance_tags[count.index]
+#   tags = var.instance_tags[count.index]
 
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-      labels = {
-        my_label = "value"
-      }
-    }
-  }
+#   boot_disk {
+#     initialize_params {
+#       image = "debian-cloud/debian-11"
+#       labels = {
+#         my_label = "value"
+#       }
+#     }
+#   }
 
-  // Local SSD disk
-  scratch_disk {
-    interface = "NVME"
-  }
+#   // Local SSD disk
+#   scratch_disk {
+#     interface = "NVME"
+#   }
 
-  network_interface {
-    network = "default"
+#   network_interface {
+#     network = "default"
 
-    access_config {
-      // Ephemeral public IP
-    }
-  }
+#     access_config {
+#       // Ephemeral public IP
+#     }
+#   }
 
-  metadata = {
-    foo = "bar"
-  }
+#   metadata = {
+#     foo = "bar"
+#   }
 
-  metadata_startup_script = "echo hi > /test.txt"
+#   metadata_startup_script = "echo hi > /test.txt"
 
-  service_account {
-    email  = google_service_account.default.email
-    scopes = ["cloud-platform"]
-  }
-}
+#   service_account {
+#     email  = google_service_account.default.email
+#     scopes = ["cloud-platform"]
+#   }
+# }
